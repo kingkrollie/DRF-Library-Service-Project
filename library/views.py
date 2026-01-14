@@ -3,7 +3,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from library.models import Book
 from library.serializers import BookSerializer
-from library.permissions import IsAdminOrIfAuthenticatedReadOnly
+from library.permissions import IsAdminOrReadOnly
 
 
 class BookViewSet(
@@ -16,7 +16,7 @@ class BookViewSet(
 ):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 
