@@ -1,3 +1,16 @@
-from django.shortcuts import render
+from rest_framework import generics
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# Create your views here.
+from users.serializers import UserSerializer, AuthTokenSerializer
+
+
+class CreateUserView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+
+class LoginUserView(TokenObtainPairView):
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+    serializer_class = AuthTokenSerializer
