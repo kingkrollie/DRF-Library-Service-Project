@@ -14,3 +14,12 @@ class CreateUserView(generics.CreateAPIView):
 class LoginUserView(TokenObtainPairView):
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
     serializer_class = AuthTokenSerializer
+
+
+class ManageUserView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
