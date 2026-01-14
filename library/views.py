@@ -14,6 +14,8 @@ class BookViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = Book.objects.all()
+    def get_queryset(self):
+        return Book.objects.all().order_by("id")
+
     serializer_class = BookSerializer
     permission_classes = (IsAdminOrReadOnly,)
