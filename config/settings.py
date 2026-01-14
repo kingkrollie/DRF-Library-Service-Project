@@ -1,12 +1,16 @@
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 SECRET_KEY = "django-insecure-*#$9=*!a^ksz407=rfi^l753x2is&5k+lag$t97)r09=j1#a2="
+
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -51,6 +55,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -82,6 +87,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
 
 STATIC_URL = "static/"
 
