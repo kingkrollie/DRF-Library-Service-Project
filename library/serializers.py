@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from library.models import Borrowing, Book
 
@@ -20,3 +21,17 @@ class BorrowingReadSerializer(serializers.ModelSerializer):
             "actual_return_date",
             "book",
         )
+        
+        
+class BorrowingCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = ("id", "book", "expected_return_date")
+        read_only_fields = ("id",)
+
+    def validate_expected_return_date(self, value):
+        today = timezone.localdate()
+        if value < today:
+            raise serializers.ValidationError("Expected return date cannot be "
+                                              "earlier than today.")
+        return value
