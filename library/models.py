@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q, F
 from django.utils.translation import gettext_lazy as _
 
 
@@ -38,6 +39,24 @@ class Borrowing(models.Model):
         on_delete=models.CASCADE,
         related_name="borrowings"
     )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(expected_return_date__gte=F("borrow_date")),
+                name="expected_return_gte_borrow_date",
+            ),
+            models.CheckConstraint(
+                condition=Q(actual_return_date__isnull=True) | Q(
+                    actual_return_date__gte=F("borrow_date")),
+                name="actual_return_null_or_gte_borrow_date",
+            ),
+            models.CheckConstraint(
+                condition=Q(actual_return_date__isnull=True) | Q(
+                    actual_return_date__lte=F("expected_return_date")),
+                name="actual_return_null_or_lte_expected",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.user} borrowed {self.book}"
