@@ -1,25 +1,26 @@
 import os
 import stripe
+from django.conf import settings
 from django.utils.decorators import method_decorator
-from django.views import View
-from dotenv import load_dotenv
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.views import APIView
 
 from payment.models import Payment
+from payment.permissions import IsPaymentOwnerOrStaff
 from payment.serializers import PaymentSerializer
 
-load_dotenv()
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+stripe.api_key = settings.STRIPE_API_KEY
 
 
 class PaymentViewSet(ReadOnlyModelViewSet):
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated, IsPaymentOwnerOrStaff]
 
     def get_queryset(self):
         return Payment.objects.all()
@@ -56,8 +57,3 @@ class StripeWebhookView(APIView):
                 pass
 
         return HttpResponse(status=200)
-
-
-class PaymentSuccessView(View):
-    def get(self, request):
-        return HttpResponse("Payment successful! You can close this page.")
