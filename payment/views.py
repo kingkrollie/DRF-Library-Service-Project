@@ -27,7 +27,7 @@ from rest_framework.response import Response
 
 class PayView(APIView):  #TEST TEST TEST
     def post(self, request):
-        session = create_checkout_session(amount_usd=5)
+        session = create_checkout_session(amount_usd=50)
         return Response({
             "checkout_url": session.url
         })
