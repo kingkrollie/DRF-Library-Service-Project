@@ -9,11 +9,11 @@ from library.models import Book
 from library.serializers import BookSerializer
 
 
-BOOK_URL = reverse("book-list")
+BOOK_URL = reverse("library:book-list")
 
 
 def detail_url(book_id):
-    return reverse("book-detail", args=[book_id])
+    return reverse("library:book-detail", args=[book_id])
 
 
 def sample_book(**params):
@@ -25,8 +25,18 @@ def sample_book(**params):
         "daily_fee": "1.50",
     }
     defaults.update(params)
-
     return Book.objects.create(**defaults)
+
+
+def get_jwt_token(client, user):
+    res = client.post(
+        reverse("users:token_obtain_pair"),
+        {
+            "email": user.email,
+            "password": "testpass123",
+        },
+    )
+    return res.data["access"]
 
 
 class UnauthenticatedBookApiTests(TestCase):
@@ -43,7 +53,7 @@ class UnauthenticatedBookApiTests(TestCase):
         serializer = BookSerializer(books, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
 
     def test_retrieve_book_allowed(self):
         book = sample_book()
@@ -65,7 +75,7 @@ class UnauthenticatedBookApiTests(TestCase):
 
         res = self.client.post(BOOK_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class AuthenticatedBookApiTests(TestCase):
@@ -73,9 +83,11 @@ class AuthenticatedBookApiTests(TestCase):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email="user@test.com",
-            password="testpass",
+            password="testpass123",
         )
-        self.client.force_authenticate(self.user)
+
+        token = get_jwt_token(self.client, self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     def test_list_books_allowed(self):
         sample_book()
@@ -121,10 +133,12 @@ class AdminBookApiTests(TestCase):
         self.client = APIClient()
         self.admin = get_user_model().objects.create_user(
             email="admin@test.com",
-            password="adminpass",
+            password="testpass123",
             is_staff=True,
         )
-        self.client.force_authenticate(self.admin)
+
+        token = get_jwt_token(self.client, self.admin)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     def test_create_book_success(self):
         payload = {
@@ -138,17 +152,18 @@ class AdminBookApiTests(TestCase):
         res = self.client.post(BOOK_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        book = Book.objects.get(id=res.data["id"])
 
+        book = Book.objects.get(id=res.data["id"])
         for key in payload:
-            self.assertEqual(str(payload[key]), str(getattr(book, key)))
+            self.assertEqual(str(getattr(book, key)), str(payload[key]))
 
     def test_update_book_success(self):
         book = sample_book()
 
-        payload = {"inventory": 10}
-
-        res = self.client.patch(detail_url(book.id), payload)
+        res = self.client.patch(
+            detail_url(book.id),
+            {"inventory": 10},
+        )
 
         book.refresh_from_db()
 
