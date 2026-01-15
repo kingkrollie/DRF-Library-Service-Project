@@ -6,7 +6,8 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/users/", include("users.urls", namespace="users")),
-    path('api/', include('payment.urls')),
+    path("api/", include("library.urls", namespace="library")),
+    path('api/', include("payment.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/doc/swagger/",
