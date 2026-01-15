@@ -3,6 +3,18 @@ from rest_framework import serializers
 from library.models import Borrowing, Book
 
 
+class BookSerializer(serializers.ModelSerializer):
+   class Meta:
+       model = Book
+       fields = (
+           "id",
+           "title",
+           "author",
+           "cover",
+           "inventory",
+           "daily_fee",
+       )
+
 class BookDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book

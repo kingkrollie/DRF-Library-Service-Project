@@ -1,18 +1,35 @@
 from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
-from rest_framework import generics, status
+from rest_framework import generics, status, mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from library.models import Borrowing, Book
-from library.permissions import IsOwnerOrStaff
+from library.permissions import IsOwnerOrStaff, IsAdminOrReadOnly
 from library.serializers import (
     BorrowingReadSerializer,
     BorrowingCreateSerializer,
+    BookSerializer,
 )
+
+class BookViewSet(
+   mixins.ListModelMixin,
+   mixins.CreateModelMixin,
+   mixins.RetrieveModelMixin,
+   mixins.UpdateModelMixin,
+   mixins.DestroyModelMixin,
+   GenericViewSet,
+):
+   def get_queryset(self):
+       return Book.objects.all().order_by("id")
+
+
+   serializer_class = BookSerializer
+   permission_classes = (IsAdminOrReadOnly,)
 
 
 class BorrowingListCreateView(generics.ListCreateAPIView):
