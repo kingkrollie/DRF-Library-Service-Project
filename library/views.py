@@ -29,6 +29,10 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
         
         if not self.request.user.is_staff:
             qs = qs.filter(user=self.request.user)
+        else:
+            user_id = self.request.GET.get("user_id")
+            if user_id and user_id.isdigit():
+                qs = qs.filter(user_id=int(user_id))
 
         is_active = self.request.GET.get("is_active")
         if is_active is not None:
