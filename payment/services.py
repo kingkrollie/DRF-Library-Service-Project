@@ -1,13 +1,16 @@
 import os
-from dotenv import load_dotenv
+
 import stripe
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
+def create_payment_session(borrowing):
+    total_price = borrowing.total_price
 
-def create_checkout_session(amount_usd: int):   #TEST TEST TEST
     session = stripe.checkout.Session.create(
         mode="payment",
         payment_method_types=["card"],
@@ -16,9 +19,9 @@ def create_checkout_session(amount_usd: int):   #TEST TEST TEST
                 "price_data": {
                     "currency": "usd",
                     "product_data": {
-                        "name": "Test payment",
+                        "name": f"Borrowing #{borrowing.id}",
                     },
-                    "unit_amount": amount_usd * 100,  # cents
+                    "unit_amount": int(total_price * 100),
                 },
                 "quantity": 1,
             }
@@ -26,4 +29,5 @@ def create_checkout_session(amount_usd: int):   #TEST TEST TEST
         success_url="http://localhost:8000/success?session_id={CHECKOUT_SESSION_ID}",
         cancel_url="http://localhost:8000/cancel",
     )
+
     return session
