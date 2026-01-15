@@ -1,13 +1,15 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-*#$9=*!a^ksz407=rfi^l753x2is&5k+lag$t97)r09=j1#a2="
+SECRET_KEY = os.environ["SECRET_KEY"]
+
+STRIPE_API_KEY=os.getenv("STRIPE_SECRET_KEY")
 
 DEBUG = True
 
@@ -58,8 +60,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": os.environ["POSTGRES_HOST"],
+        "PORT": os.environ["POSTGRES_PORT"],
     }
 }
 
@@ -117,5 +123,3 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     },
 }
-
-STRIPE_API_KEY=os.getenv("STRIPE_SECRET_KEY")
