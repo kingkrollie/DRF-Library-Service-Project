@@ -2,13 +2,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ["SECRET_KEY"]
+
+STRIPE_API_KEY=os.getenv("STRIPE_SECRET_KEY")
 
 DEBUG = True
 
