@@ -28,6 +28,7 @@ services:
           path: requirements.txt
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:16.0-alpine3.17
@@ -43,6 +44,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  celery:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    command: sh -c "sleep 5 && celery -A config worker --loglevel=info"
+    depends_on:
+      - library
+      - redis
 
 volumes:
   my_db:

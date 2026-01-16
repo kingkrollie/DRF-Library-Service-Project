@@ -15,6 +15,8 @@ from library.serializers import (
     BorrowingCreateSerializer,
     BookSerializer,
 )
+from notifications.tasks import notify_new_borrowing
+
 
 class BookViewSet(
    mixins.ListModelMixin,
@@ -82,6 +84,9 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
         borrowing = serializer.save(user=self.request.user)
 
         Book.objects.filter(pk=book.pk).update(inventory=F("inventory") - 1)
+
+        notify_new_borrowing.delay(borrowing.id)
+
         return borrowing
 
 
