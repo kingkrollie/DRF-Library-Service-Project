@@ -16,6 +16,8 @@ from library.serializers import (
     BookSerializer,
 )
 from notifications.tasks import notify_new_borrowing
+from payment.models import Payment
+from payment.services import create_payment_fee_session
 
 
 class BookViewSet(
@@ -126,6 +128,17 @@ class BorrowingReturnView(APIView):
 
         Book.objects.filter(pk=borrowing.book_id).update(
             inventory=F("inventory") + 1)
+        if borrowing.actual_return_date <= borrowing.expected_return_date:
+            session = create_payment_fee_session(borrowing)
+
+            Payment.objects.create(
+                borrowing=borrowing,
+                session_id=session.id,
+                session_url=session.url,
+                money=session.fee_amount,
+                status=Payment.Status.PENDING,
+                type=Payment.Type.FINE,
+            )
 
         return Response(BorrowingReadSerializer(borrowing).data, 
                         status=status.HTTP_200_OK)
