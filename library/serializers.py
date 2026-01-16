@@ -73,7 +73,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
                 borrowing=borrowing,
                 session_id=session.id,
                 session_url=session.url,
-                money=borrowing.total_price,
+                money=session.total_price,
                 status=Payment.Status.PENDING,
                 type=Payment.Type.PAYMENT,
             )
