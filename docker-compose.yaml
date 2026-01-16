@@ -64,5 +64,17 @@ services:
       - library
       - redis
 
+  celery-beat:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    command: celery -A config beat --loglevel=info
+    depends_on:
+      - library
+      - redis
+
 volumes:
   my_db:

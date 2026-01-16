@@ -130,3 +130,12 @@ REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'notify-overdue-borrowings-everyday': {
+        'task': 'notifications.tasks.notify_overdue_borrowings',
+        'schedule': crontab(minute=0, hour=8),  # 08:00
+    },
+}
