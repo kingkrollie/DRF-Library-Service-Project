@@ -16,6 +16,10 @@ from library.serializers import (
     BorrowingCreateSerializer,
     BookSerializer,
 )
+from notifications.tasks import notify_new_borrowing
+from payment.models import Payment
+from payment.services import create_payment_session
+
 
 class BookViewSet(
     mixins.ListModelMixin,
@@ -89,9 +93,19 @@ class BorrowingViewSet(
 
         borrowing = serializer.save(user=self.request.user)
 
-        Book.objects.filter(pk=book.pk).update(
-            inventory=F("inventory") - 1
-        )
+        Book.objects.filter(pk=book.pk).update(inventory=F("inventory") - 1)
+
+        notify_new_borrowing.delay(borrowing.id)
+
+        return borrowing
+
+
+class BorrowingDetailView(generics.RetrieveAPIView):
+    serializer_class = BorrowingReadSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff)
+
+    def get_queryset(self):
+        return Borrowing.objects.select_related("book", "user")
 
         return borrowing
 
@@ -121,8 +135,18 @@ class BorrowingViewSet(
         borrowing.save(update_fields=["actual_return_date"])
 
         Book.objects.filter(pk=borrowing.book_id).update(
-            inventory=F("inventory") + 1
-        )
+            inventory=F("inventory") + 1)
+        if borrowing.actual_return_date >= borrowing.expected_return_date:
+            session = create_payment_session(borrowing, is_fee=True)
+
+            Payment.objects.create(
+                borrowing=borrowing,
+                session_id=session.id,
+                session_url=session.url,
+                money=session.total_price,
+                status=Payment.Status.PENDING,
+                type=Payment.Type.FINE,
+            )
 
         serializer = BorrowingReadSerializer(
             borrowing,

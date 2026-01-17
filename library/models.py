@@ -58,5 +58,10 @@ class Borrowing(models.Model):
             ),
         ]
 
+    @property
+    def total_price(self):
+        days = (self.expected_return_date - self.borrow_date).days
+        return days * self.book.daily_fee
+
     def __str__(self):
         return f"{self.user} borrowed {self.book}"
