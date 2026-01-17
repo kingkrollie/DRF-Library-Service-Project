@@ -10,5 +10,7 @@ router.register("payments", PaymentViewSet, basename="payments")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("stripe/webhook/", StripeWebhookView.as_view(), name="stripe-webhook"),
+    path(
+        "stripe/webhook/", StripeWebhookView.as_view(), name="stripe-webhook"
+    ),
 ]

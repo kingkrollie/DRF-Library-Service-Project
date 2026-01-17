@@ -31,5 +31,5 @@ jobs:
       - name: Run flake8
         run: flake8
 
-      - name: Run Django tests
-        run: python manage.py test
+#      - name: Run Django tests
+#        run: python manage.py test

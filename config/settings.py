@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -9,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-STRIPE_API_KEY=os.getenv("STRIPE_SECRET_KEY")
+STRIPE_API_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 DEBUG = True
 
@@ -73,16 +74,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "NumericPasswordValidator",
     },
 ]
 
@@ -103,7 +108,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # noqa: E501
     "PAGE_SIZE": 100,
 }
 
@@ -128,14 +133,12 @@ SPECTACULAR_SETTINGS = {
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-
-from celery.schedules import crontab
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"  # noqa: E231
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"  # noqa: E231
 
 CELERY_BEAT_SCHEDULE = {
-    'notify-overdue-borrowings-everyday': {
-        'task': 'notifications.tasks.notify_overdue_borrowings',
-        'schedule': crontab(minute=0, hour=8),  # 08:00
+    "notify-overdue-borrowings-everyday": {
+        "task": "notifications.tasks.notify_overdue_borrowings",
+        "schedule": crontab(minute=0, hour=8),  # 08:00
     },
 }
