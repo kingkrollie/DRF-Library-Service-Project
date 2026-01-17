@@ -76,5 +76,19 @@ services:
       - library
       - redis
 
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    container_name: stripe-cli
+    ports:
+      - "12111:12111"
+    command: listen --forward-to http://library:8000/api/stripe/webhook/
+    volumes:
+      - stripe-config:/root/.config/stripe
+    stdin_open: true
+    tty: true
+    depends_on:
+      - library
+
 volumes:
   my_db:
+  stripe-config: {}
