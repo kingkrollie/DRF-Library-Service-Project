@@ -10,10 +10,10 @@ def notify_new_borrowing(borrowing_id):
     borrowing = Borrowing.objects.get(id=borrowing_id)
     message = (
         f"📚 New Borrowing Created!\n"
-        f"User: {borrowing.user.email}\n"
-        f"Book: {borrowing.book.title}\n"
-        f"Borrow Date: {borrowing.borrow_date}\n"
-        f"Expected Return: {borrowing.expected_return_date}"
+        f"👤 User: {borrowing.user.email}\n"
+        f"📖 Book: {borrowing.book.title}\n"
+        f"📅 Borrow Date: {borrowing.borrow_date}\n"
+        f"📅 Expected Return: {borrowing.expected_return_date}"
     )
     send_telegram_message(message)
 
