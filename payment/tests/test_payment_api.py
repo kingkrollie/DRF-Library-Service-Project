@@ -9,6 +9,7 @@ from rest_framework.test import APIClient
 from library.models import Book, Borrowing
 from payment.models import Payment
 from payment.services import create_payment_session
+from payment.views import StripeWebhookView
 
 PAYMENTS_URL = reverse("payment:payments-list")
 user = get_user_model()
@@ -96,6 +97,7 @@ class PaymentViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, 401)
 
+
 class PaymentSessionTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -130,17 +132,16 @@ class PaymentSessionTests(TestCase):
             actual_return_date=date.today() + timedelta(days=10)
         )
 
-
     def test_correct_total_price(self):
         session = create_payment_session(self.borrowing)
         price = session.total_price / 100
         calculate_total = (self.days * self.book.daily_fee)
         self.assertEqual(price, calculate_total)
 
-
     def test_correct_fee_price(self):
         session = create_payment_session(self.exp_borrowing)
         price = session.total_price / 100
-        days = (self.exp_borrowing.actual_return_date - self.exp_borrowing.expected_return_date).days
+        days = (
+                self.exp_borrowing.actual_return_date - self.exp_borrowing.expected_return_date).days
         calculate_total = days * self.book.daily_fee
         self.assertEqual(price, calculate_total)
