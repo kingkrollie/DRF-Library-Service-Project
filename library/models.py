@@ -51,11 +51,6 @@ class Borrowing(models.Model):
                     actual_return_date__gte=F("borrow_date")),
                 name="actual_return_null_or_gte_borrow_date",
             ),
-            models.CheckConstraint(
-                condition=Q(actual_return_date__isnull=True) | Q(
-                    actual_return_date__lte=F("expected_return_date")),
-                name="actual_return_null_or_lte_expected",
-            ),
         ]
 
     @property
