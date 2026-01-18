@@ -10,8 +10,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.views import APIView
 
+from library.permissions import IsOwnerOrStaff
 from payment.models import Payment
-from payment.permissions import IsPaymentOwnerOrStaff
 from payment.serializers import PaymentSerializer
 
 from notifications.tasks import notify_payment_success
@@ -22,10 +22,23 @@ stripe.api_key = settings.STRIPE_API_KEY
 
 class PaymentViewSet(ReadOnlyModelViewSet):
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated, IsPaymentOwnerOrStaff]
+    permission_classes = (IsAuthenticated, IsOwnerOrStaff)
 
     def get_queryset(self):
-        return Payment.objects.all()
+        user = self.request.user
+
+        if user.is_staff:
+            return Payment.objects.select_related(
+                "borrowing",
+                "borrowing__user",
+                "borrowing__book",
+            )
+
+        return Payment.objects.select_related(
+            "borrowing",
+            "borrowing__user",
+            "borrowing__book",
+        ).filter(borrowing__user=user)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
