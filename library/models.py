@@ -29,15 +29,11 @@ class Borrowing(models.Model):
     actual_return_date = models.DateField(null=True, blank=True)
 
     book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE,
-        related_name="borrowings"
+        Book, on_delete=models.CASCADE, related_name="borrowings"
     )
 
     user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="borrowings"
+        get_user_model(), on_delete=models.CASCADE, related_name="borrowings"
     )
 
     class Meta:
@@ -47,8 +43,8 @@ class Borrowing(models.Model):
                 name="expected_return_gte_borrow_date",
             ),
             models.CheckConstraint(
-                condition=Q(actual_return_date__isnull=True) | Q(
-                    actual_return_date__gte=F("borrow_date")),
+                condition=Q(actual_return_date__isnull=True)
+                | Q(actual_return_date__gte=F("borrow_date")),
                 name="actual_return_null_or_gte_borrow_date",
             ),
         ]

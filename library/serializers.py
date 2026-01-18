@@ -48,20 +48,20 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     def validate_expected_return_date(self, value):
         today = timezone.localdate()
         if value < today:
-            raise serializers.ValidationError("Expected return date cannot be "
-                                              "earlier than today.")
+            raise serializers.ValidationError(
+                "Expected return date cannot be " "earlier than today."
+            )
         return value
 
     def create(self, validated_data):
         request = self.context["request"]
         book = validated_data["book"]
 
-        validated_data.pop('user', None)
+        validated_data.pop("user", None)
 
         with transaction.atomic():
             borrowing = Borrowing.objects.create(
-                user=request.user,
-                **validated_data
+                user=request.user, **validated_data
             )
 
             book.inventory -= 1

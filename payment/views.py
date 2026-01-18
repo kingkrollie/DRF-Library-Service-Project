@@ -63,9 +63,7 @@ class StripeWebhookView(APIView):
             session = event["data"]["object"]
 
             try:
-                payment = Payment.objects.get(
-                    session_id=session["id"]
-                )
+                payment = Payment.objects.get(session_id=session["id"])
                 payment.status = Payment.Status.PAID
                 payment.save(update_fields=["status"])
                 notify_payment_success.delay(payment.id)
