@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import (
     AbstractUser,
-    UserManager as DjangoUserManager
+    UserManager as DjangoUserManager,
 )
 
 
@@ -41,7 +41,12 @@ class UserManager(DjangoUserManager):
         return self._create_user(email, password, **extra_fields)
 
     def with_perm(
-        self, perm, is_active=True, include_superusers=True, backend=None, obj=None
+        self,
+        perm,
+        is_active=True,
+        include_superusers=True,
+        backend=None,
+        obj=None,
     ):
         if backend is None:
             backends = auth.get_backends()
@@ -54,7 +59,8 @@ class UserManager(DjangoUserManager):
                 )
         elif not isinstance(backend, str):
             raise TypeError(
-                "backend must be a dotted import path string (got %r)." % backend
+                "backend must be a dotted import path string (got %r)."
+                % backend
             )
         else:
             backend = auth.load_backend(backend)
