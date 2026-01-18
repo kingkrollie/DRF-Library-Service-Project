@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.utils.timezone import now
 
+from payment.models import Payment
 from .services.telegram_client import send_telegram_message
 from library.models import Borrowing
 
@@ -42,3 +43,16 @@ def notify_overdue_borrowings():
 
     for msg in messages:
         send_telegram_message(msg)
+
+
+@shared_task
+def notify_payment_success(payment_id):
+    payment = Payment.objects.get(id=payment_id)
+    actual_money = payment.money / 100
+    message = (
+        f"💳 Payment Successful!\n"
+        f"👤 User: {payment.borrowing.user.email}\n"
+        f"📖 Book: {payment.borrowing.book.title}\n"
+        f"💰 Amount: ${actual_money}"
+    )
+    send_telegram_message(message)

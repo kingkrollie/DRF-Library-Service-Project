@@ -14,7 +14,7 @@ STRIPE_API_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "library"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
