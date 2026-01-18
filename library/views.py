@@ -105,8 +105,7 @@ class BorrowingViewSet(
     @transaction.atomic
     def return_book(self, request, pk=None):
         borrowing = (
-            Borrowing.objects
-            .select_related("book", "user")
+            Borrowing.objects.select_related("book", "user")
             .select_for_update()
             .get(pk=pk)
         )
