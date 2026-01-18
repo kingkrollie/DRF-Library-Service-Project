@@ -84,7 +84,7 @@ docker-compose exec library python manage.py test
 
 ## Configuration
 
-* Custom `AUTH_USER_MODEL` (`accounts.Veterinarian` in example; replace as needed)
+* Custom `AUTH_USER_MODEL` (`users.User`)
 * Database configuration via `settings.py`
 * Celery & Redis configuration for background tasks
 * Global pagination settings
