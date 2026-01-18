@@ -33,6 +33,7 @@ class BookViewSet(
     serializer_class = BookSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
+
 class BorrowingViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
@@ -89,6 +90,7 @@ class BorrowingViewSet(
 
         if book.inventory <= 0:
             from rest_framework.exceptions import ValidationError
+
             raise ValidationError({"book": "This book is out of stock."})
 
         borrowing = serializer.save(user=self.request.user)
@@ -107,18 +109,11 @@ class BorrowingDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return Borrowing.objects.select_related("book", "user")
 
-        return borrowing
-
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="return"
-    )
+    @action(methods=["post"], detail=True, url_path="return")
     @transaction.atomic
     def return_book(self, request, pk=None):
         borrowing = (
-            Borrowing.objects
-            .select_related("book", "user")
+            Borrowing.objects.select_related("book", "user")
             .select_for_update()
             .get(pk=pk)
         )
@@ -135,7 +130,8 @@ class BorrowingDetailView(generics.RetrieveAPIView):
         borrowing.save(update_fields=["actual_return_date"])
 
         Book.objects.filter(pk=borrowing.book_id).update(
-            inventory=F("inventory") + 1)
+            inventory=F("inventory") + 1
+        )
         if borrowing.actual_return_date >= borrowing.expected_return_date:
             session = create_payment_session(borrowing, is_fee=True)
 
@@ -149,6 +145,6 @@ class BorrowingDetailView(generics.RetrieveAPIView):
             )
 
         serializer = BorrowingReadSerializer(
-            borrowing,
-            context={"request": request})
+            borrowing, context={"request": request}
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)

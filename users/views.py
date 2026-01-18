@@ -24,15 +24,13 @@ class LoginUserView(TokenObtainPairView):
 
 
 @extend_schema_view(
-    get=extend_schema(
-        description="Return authorized user profile data"
-    ),
+    get=extend_schema(description="Return authorized user profile data"),
     put=extend_schema(
         description="Update user data (full)",
     ),
     patch=extend_schema(
         description="Update user data (partial)",
-    )
+    ),
 )
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer

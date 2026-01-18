@@ -14,16 +14,12 @@ class Payment(models.Model):
         FINE = "FN", _("Fine")
 
     status = models.CharField(
-        max_length=2,
-        choices=Status,
-        default=Status.PENDING
+        max_length=2, choices=Status, default=Status.PENDING
     )
-    type = models.CharField(
-        max_length=2,
-        choices=Type
+    type = models.CharField(max_length=2, choices=Type)  # noqa: VNE003
+    borrowing = models.ForeignKey(
+        Borrowing, on_delete=models.CASCADE, related_name="payments"
     )
-    borrowing = models.ForeignKey(Borrowing, on_delete=models.CASCADE,
-                                  related_name="payments")
     session_url = models.URLField(max_length=500)
     session_id = models.CharField(max_length=255, unique=True)
     money = models.DecimalField(

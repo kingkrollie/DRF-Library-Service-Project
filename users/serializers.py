@@ -7,7 +7,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "email", "password", "first_name", "last_name", "is_staff")
+        fields = (
+            "id",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "is_staff",
+        )
         read_only_fields = ("id", "is_staff")
         extra_kwargs = {
             "password": {
@@ -50,7 +57,9 @@ class AuthTokenSerializer(serializers.Serializer):
 
         if email and password:
             user = authenticate(
-                request=self.context.get("request"), email=email, password=password
+                request=self.context.get("request"),
+                email=email,
+                password=password,
             )
 
             if not user:
