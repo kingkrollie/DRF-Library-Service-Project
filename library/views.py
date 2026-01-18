@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
 
-from rest_framework import mixins, status, generics
+from rest_framework import mixins, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
@@ -101,14 +101,6 @@ class BorrowingViewSet(
 
         return borrowing
 
-
-class BorrowingDetailView(generics.RetrieveAPIView):
-    serializer_class = BorrowingReadSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOrStaff)
-
-    def get_queryset(self):
-        return Borrowing.objects.select_related("book", "user")
-
     @action(methods=["post"], detail=True, url_path="return")
     @transaction.atomic
     def return_book(self, request, pk=None):
@@ -132,7 +124,7 @@ class BorrowingDetailView(generics.RetrieveAPIView):
         Book.objects.filter(pk=borrowing.book_id).update(
             inventory=F("inventory") + 1
         )
-        if borrowing.actual_return_date >= borrowing.expected_return_date:
+        if borrowing.actual_return_date > borrowing.expected_return_date:
             session = create_payment_session(borrowing, is_fee=True)
 
             Payment.objects.create(
