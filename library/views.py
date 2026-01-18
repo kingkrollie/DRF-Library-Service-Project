@@ -107,8 +107,6 @@ class BorrowingDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return Borrowing.objects.select_related("book", "user")
 
-        return borrowing
-
     @action(
         methods=["post"],
         detail=True,
