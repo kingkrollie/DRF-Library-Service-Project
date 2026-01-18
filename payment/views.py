@@ -14,6 +14,9 @@ from library.permissions import IsOwnerOrStaff
 from payment.models import Payment
 from payment.serializers import PaymentSerializer
 
+from notifications.tasks import notify_payment_success
+
+
 stripe.api_key = settings.STRIPE_API_KEY
 
 
@@ -65,6 +68,7 @@ class StripeWebhookView(APIView):
                 )
                 payment.status = Payment.Status.PAID
                 payment.save(update_fields=["status"])
+                notify_payment_success.delay(payment.id)
             except Payment.DoesNotExist:
                 pass
 
