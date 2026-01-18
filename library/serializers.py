@@ -54,22 +54,13 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        request = self.context["request"]
-        book = validated_data["book"]
+        user = validated_data.pop("user")
 
-        validated_data.pop("user", None)
+        borrowing = Borrowing.objects.create(user=user, **validated_data)
 
-        with transaction.atomic():
-            borrowing = Borrowing.objects.create(
-                user=request.user, **validated_data
-            )
+        session = create_payment_session(borrowing)
 
-            book.inventory -= 1
-            book.save(update_fields=["inventory"])
-
-            session = create_payment_session(borrowing)
-
-            Payment.objects.create(
+        Payment.objects.create(
                 borrowing=borrowing,
                 session_id=session.id,
                 session_url=session.url,

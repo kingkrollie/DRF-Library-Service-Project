@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch, MagicMock
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -48,6 +49,13 @@ class BorrowingCreateReturnTests(TestCase):
                         timezone.localdate() + timedelta(days=7)).isoformat(),
         }
 
+    def _mock_stripe_session(self, mock_create_session):
+        mock_create_session.return_value = MagicMock(
+            id="sess_test_123",
+            url="http://test-session.local",
+            total_price=100,
+        )
+
     # ---- Auth ----
 
     def test_borrowing_list_requires_auth(self):
@@ -61,9 +69,11 @@ class BorrowingCreateReturnTests(TestCase):
 
     # ---- Create borrowing ----
 
-    def test_create_borrowing_decreases_inventory_and_attaches_user(self):
-        self.client.force_authenticate(user=self.user)
+    @patch("library.serializers.create_payment_session")
+    def test_create_borrowing_decreases_inventory_and_attaches_user(self, mock_create_session):
+        self._mock_stripe_session(mock_create_session)
 
+        self.client.force_authenticate(user=self.user)
         res = self.client.post(BORROWING_LIST_CREATE,
                                self._payload(self.book_b.id))
 
@@ -77,21 +87,32 @@ class BorrowingCreateReturnTests(TestCase):
         self.book_b.refresh_from_db()
         self.assertEqual(self.book_b.inventory, 0)
 
-    def test_create_borrowing_out_of_stock_returns_400(self):
+        mock_create_session.assert_called()
+
+    @patch("library.serializers.create_payment_session")
+    def test_create_borrowing_out_of_stock_returns_400(self,
+                                                       mock_create_session):
+        self._mock_stripe_session(mock_create_session)
+
         self.book_b.inventory = 0
         self.book_b.save(update_fields=["inventory"])
 
         self.client.force_authenticate(user=self.user)
-
         res = self.client.post(BORROWING_LIST_CREATE,
                                self._payload(self.book_b.id))
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("book", res.data)
 
+        mock_create_session.assert_not_called()
+
     # ---- Return borrowing ----
 
-    def test_return_borrowing_sets_actual_return_date_and_increases_inventory(self):
+    @patch("library.serializers.create_payment_session")
+    def test_return_borrowing_sets_actual_return_date_and_increases_inventory(
+            self, mock_create_session):
+        self._mock_stripe_session(mock_create_session)
+
         self.client.force_authenticate(user=self.user)
 
         res_create = self.client.post(BORROWING_LIST_CREATE,
@@ -112,11 +133,15 @@ class BorrowingCreateReturnTests(TestCase):
         self.book_a.refresh_from_db()
         self.assertEqual(self.book_a.inventory, 2)
 
-    def test_return_borrowing_twice_returns_400(self):
+    @patch("library.serializers.create_payment_session")
+    def test_return_borrowing_twice_returns_400(self, mock_create_session):
+        self._mock_stripe_session(mock_create_session)
+
         self.client.force_authenticate(user=self.user)
 
         res_create = self.client.post(BORROWING_LIST_CREATE,
                                       self._payload(self.book_a.id))
+        self.assertEqual(res_create.status_code, status.HTTP_201_CREATED)
         borrowing_id = res_create.data["id"]
 
         res1 = self.client.post(borrowing_return_url(borrowing_id))
