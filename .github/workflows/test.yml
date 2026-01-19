@@ -55,7 +55,10 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_PORT: 5432
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: python manage.py makemigrations
+        run: |
+            python manage.py makemigrations users &&
+            python manage.py makemigrations library &&
+            python manage.py makemigrations payment &&
 
       - name: Run migrations
         env:
@@ -65,7 +68,12 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_PORT: 5432
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: python manage.py migrate
+        run: |
+            python manage.py migrate users &&
+            python manage.py migrate library &&
+            python manage.py migrate payment &&
+            python manage.py migrate &&
+        
 
       - name: Run unit tests
         env:
