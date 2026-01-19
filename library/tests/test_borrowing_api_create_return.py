@@ -46,7 +46,7 @@ class BorrowingCreateReturnTests(TestCase):
         return {
             "book": book_id,
             "expected_return_date": (
-                        timezone.localdate() + timedelta(days=7)).isoformat(),
+                timezone.localdate() + timedelta(days=7)).isoformat(),
         }
 
     def _mock_stripe_session(self, mock_create_session):
@@ -70,7 +70,7 @@ class BorrowingCreateReturnTests(TestCase):
     # ---- Create borrowing ----
 
     @patch("library.serializers.create_payment_session")
-    def test_create_borrowing_decreases_inventory_and_attaches_user(self, mock_create_session):
+    def test_create_borrowing_decreases_inventory_and_attaches_user(self, mock_create_session): # noqa
         self._mock_stripe_session(mock_create_session)
 
         self.client.force_authenticate(user=self.user)

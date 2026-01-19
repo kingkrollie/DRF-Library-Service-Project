@@ -30,7 +30,7 @@ class BorrowingNotificationAPITests(TestCase):
             "expected_return_date": "2030-01-20"
         }
 
-        with patch("notifications.tasks.notify_new_borrowing.delay") as mocked_task:
+        with patch("notifications.tasks.notify_new_borrowing.delay") as mocked_task: # noqa
             response = client.post(
                 reverse("library:borrowing-list-create"),
                 payload

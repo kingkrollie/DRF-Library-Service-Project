@@ -3,7 +3,7 @@
     "model": "users.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$1200000$osjeKfZEdWyzpUB6E4MOfD$/44JNiC4B3QkpY9lHmKtGIWDWd5Dt89fIxH/UK11fHI=",
+      "password": "pbkdf2_sha256$1200000$vBjfJ5vodjFb8FJturiV0J$rmsxK3EtJUsru6Duw2Ap0uXALUN5pt8x1DzxuhBzKuI=",
       "is_superuser": true,
       "email": "admin@test.com",
       "is_staff": true,
@@ -17,7 +17,7 @@
     "model": "users.user",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$1200000$P09N9FkNeCOqZAEWJhDwXX$mUuiQiKBSn1vjnr+wWGdoTH2gP0zzQjHtDQhEPc2Eb8=",
+      "password": "pbkdf2_sha256$1200000$vBjfJ5vodjFb8FJturiV0J$rmsxK3EtJUsru6Duw2Ap0uXALUN5pt8x1DzxuhBzKuI=",
       "is_superuser": false,
       "email": "user@test.com",
       "is_staff": false,

@@ -26,7 +26,6 @@ class SerializerTests(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertIn("password", serializer.errors)
 
-
     def test_user_serializer_update(self):
         """Test user serializer update"""
         user = get_user_model().objects.create_user("old@ex.com", "pass123")
