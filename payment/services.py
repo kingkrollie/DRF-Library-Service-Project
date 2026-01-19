@@ -29,7 +29,7 @@ def create_payment_session(borrowing, is_fee: bool = False):
                 "quantity": 1,
             }
         ],
-        success_url="http://127.0.0.1:8000/api/success/?session_id={CHECKOUT_SESSION_ID}", # noqa
+        success_url="http://127.0.0.1:8000/api/success/?session_id={CHECKOUT_SESSION_ID}",  # noqa
         cancel_url="http://127.0.0.1:8000/api/cancel/",
     )
 

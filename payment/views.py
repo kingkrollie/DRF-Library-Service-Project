@@ -43,9 +43,7 @@ class PaymentViewSet(ReadOnlyModelViewSet):
 def payment_success(request):
     session_id = request.GET.get("session_id")
 
-    return HttpResponse(
-        f"✅ Payment successful! Session ID: {session_id}"
-    )
+    return HttpResponse(f"✅ Payment successful! Session ID: {session_id}")
 
 
 def payment_cancel(request):
