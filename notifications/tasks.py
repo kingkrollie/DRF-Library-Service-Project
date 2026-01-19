@@ -55,4 +55,13 @@ def notify_payment_success(payment_id):
         f"📖 Book: {payment.borrowing.book.title}\n"
         f"💰 Amount: ${actual_money}"
     )
+    if payment.type == "FN":
+        message = (
+            f"🚩Fine payment🚩\n"
+            f"💳 Payment Successful!\n"
+            f"👤 User: {payment.borrowing.user.email}\n"
+            f"📖 Book: {payment.borrowing.book.title}\n"
+            f"💰 Amount: ${actual_money}"
+        )
+
     send_telegram_message(message)
