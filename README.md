@@ -68,6 +68,7 @@ Load initial demo data fixture:
 docker-compose exec library python manage.py loaddata fixtures/initial_data.json
 ```
 
+
 ## Telegram Bot Setup
 
 The project supports Telegram notifications via a bot.
