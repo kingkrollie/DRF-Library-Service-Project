@@ -48,6 +48,26 @@ jobs:
       - name: Run flake8
         run: flake8
 
+      - name: Make migrations
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PORT: 5432
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: python manage.py makemigrations
+
+      - name: Run migrations
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PORT: 5432
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: python manage.py migrate
+
       - name: Run unit tests
         env:
           POSTGRES_HOST: 127.0.0.1
