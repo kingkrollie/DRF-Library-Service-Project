@@ -68,6 +68,32 @@ Load initial demo data fixture:
 docker-compose exec library python manage.py loaddata fixtures/initial_data.json
 ```
 
+## Telegram Bot Setup
+
+The project supports Telegram notifications via a bot.
+
+### 1. Create a Telegram Bot
+- Open Telegram and start a chat with **@BotFather**
+- Create a new bot using `/newbot`
+- Save the generated **BOT_TOKEN**
+
+### 2. Get your Chat ID
+- Start a chat with your bot or add the bot to group chat as admin
+- Send any message to it
+- Open in browser:
+  `https://api.telegram.org/bot<BOT_TOKEN>/getUpdates` (paste your BOT_TOKEN)
+- Copy the `chat.id` value
+
+### 3. Environment variables
+
+Add the following variables to your `.env` file:
+
+```env
+TELEGRAM_BOT_TOKEN="your_bot_token"
+TELEGRAM_CHAT_ID="your_chat_id"
+```
+
+
 ## Running Tests
 
 ```bash
