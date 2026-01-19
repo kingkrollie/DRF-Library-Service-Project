@@ -17,8 +17,9 @@ BORROWING_LIST_CREATE = reverse("library:borrowing-list")
 def borrowing_detail_url(borrowing_id: int) -> str:
     return reverse("library:borrowing-detail", args=[borrowing_id])
 
+
 def get_results(data):
-    return data["results"] if isinstance(data, dict) and "results" in data else data
+    return data["results"] if isinstance(data, dict) and "results" in data else data # noqa
 
 
 class BorrowingAuthPermissionsTests(TestCase):

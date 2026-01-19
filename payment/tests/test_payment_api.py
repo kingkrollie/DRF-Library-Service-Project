@@ -142,6 +142,6 @@ class PaymentSessionTests(TestCase):
         session = create_payment_session(self.exp_borrowing)
         price = session.total_price / 100
         days = (
-                self.exp_borrowing.actual_return_date - self.exp_borrowing.expected_return_date).days
+                self.exp_borrowing.actual_return_date - self.exp_borrowing.expected_return_date).days # noqa
         calculate_total = days * self.book.daily_fee
         self.assertEqual(price, calculate_total)

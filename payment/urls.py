@@ -5,7 +5,7 @@ from payment.views import (
     PaymentViewSet,
     StripeWebhookView,
     payment_success,
-    payment_cancel
+    payment_cancel,
 )
 
 app_name = "payment"

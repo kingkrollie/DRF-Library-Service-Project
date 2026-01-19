@@ -7,7 +7,10 @@ from rest_framework import status
 class ViewTests(APITestCase):
     def setUp(self):
         self.url = reverse("users:manage")
-        self.user = get_user_model().objects.create_user("test@ex.com", "pass12345")
+        self.user = get_user_model().objects.create_user(
+            "test@ex.com",
+            "pass12345"
+        )
 
     def test_retrieve_user_unauthorized(self):
         """Test anonim retrieve user data (401)"""
