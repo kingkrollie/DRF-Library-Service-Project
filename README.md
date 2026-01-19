@@ -13,6 +13,10 @@ The project improves workflow by providing structured API endpoints, automated d
 borrowings, and comprehensive test coverage to ensure reliability.
 It follows Django and DRF best practices, including viewsets, serializers, permissions, and Celery for background tasks.
 
+## Models diagram
+<img width="2613" height="1518" alt="image" src="https://github.com/user-attachments/assets/f1bb739f-3fcf-4f5e-b7d2-f7ab5a9d1009" />
+
+
 ## Installing / Getting Started
 
 ### Prerequisites
