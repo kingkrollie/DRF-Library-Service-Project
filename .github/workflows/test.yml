@@ -1,6 +1,5 @@
 name: Test
 
-
 on:
   pull_request:
     branches:
@@ -9,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: .env
+    environment: ".env"
     timeout-minutes: 15
 
     services:
@@ -51,8 +50,8 @@ jobs:
       - name: Make migrations
         env:
           POSTGRES_HOST: 127.0.0.1
-          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_PORT: 5432
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -61,8 +60,8 @@ jobs:
       - name: Run migrations
         env:
           POSTGRES_HOST: 127.0.0.1
-          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_PORT: 5432
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -72,9 +71,9 @@ jobs:
         env:
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PORT: "5432"
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PORT: 5432
           SECRET_KEY:  ${{ secrets.SECRET_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -83,5 +82,5 @@ jobs:
           STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          
+
         run: python manage.py test
