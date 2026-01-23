@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q, F
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -24,7 +25,7 @@ class Book(models.Model):
 
 
 class Borrowing(models.Model):
-    borrow_date = models.DateField(auto_now_add=True)
+    borrow_date = models.DateField(default=timezone.now)
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
 
