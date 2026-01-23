@@ -13,10 +13,9 @@ logger = logging.getLogger(__name__)
 @shared_task
 def notify_new_borrowing(borrowing_id):
     try:
-        borrowing = Borrowing.objects.select_related(
-            "user",
-            "book"
-        ).get(id=borrowing_id)
+        borrowing = Borrowing.objects.select_related("user", "book").get(
+            id=borrowing_id
+        )
 
         message = (
             f"📚 New Borrowing Created!\n"
@@ -31,14 +30,14 @@ def notify_new_borrowing(borrowing_id):
     except Borrowing.DoesNotExist:
         logger.warning(
             "Borrowing with id=%s does not exist. Skipping notification.",
-            borrowing_id
+            borrowing_id,
         )
 
     except Exception as exc:
         logger.exception(
             "Failed to send telegram notification for borrowing id=%s: %s",
             borrowing_id,
-            exc
+            exc,
         )
 
 
@@ -48,8 +47,7 @@ def notify_overdue_borrowings():
 
     try:
         overdue_borrowings = Borrowing.objects.filter(
-            expected_return_date__lte=today,
-            actual_return_date__isnull=True
+            expected_return_date__lte=today, actual_return_date__isnull=True
         ).select_related("user", "book")
 
         if not overdue_borrowings.exists():
@@ -73,8 +71,7 @@ def notify_overdue_borrowings():
 def notify_payment_success(payment_id):
     try:
         payment = Payment.objects.select_related(
-            "borrowing__user",
-            "borrowing__book"
+            "borrowing__user", "borrowing__book"
         ).get(id=payment_id)
 
         actual_money = payment.money / 100
@@ -94,12 +91,12 @@ def notify_payment_success(payment_id):
     except Payment.DoesNotExist:
         logger.warning(
             "Payment with id=%s does not exist. Skipping notification.",
-            payment_id
+            payment_id,
         )
 
     except Exception as exc:
         logger.exception(
             "Failed to send payment notification for payment id=%s: %s",
             payment_id,
-            exc
+            exc,
         )

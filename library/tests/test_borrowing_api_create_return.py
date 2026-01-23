@@ -46,7 +46,8 @@ class BorrowingCreateReturnTests(TestCase):
         return {
             "book": book_id,
             "expected_return_date": (
-                timezone.localdate() + timedelta(days=7)).isoformat(),
+                timezone.localdate() + timedelta(days=7)
+            ).isoformat(),
         }
 
     def _mock_stripe_session(self, mock_create_session):
@@ -63,19 +64,23 @@ class BorrowingCreateReturnTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_borrowing_requires_auth(self):
-        res = self.client.post(BORROWING_LIST_CREATE,
-                               self._payload(self.book_b.id))
+        res = self.client.post(
+            BORROWING_LIST_CREATE, self._payload(self.book_b.id)
+        )
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # ---- Create borrowing ----
 
     @patch("library.serializers.create_payment_session")
-    def test_create_borrowing_decreases_inventory_and_attaches_user(self, mock_create_session): # noqa
+    def test_create_borrowing_decreases_inventory_and_attaches_user(
+        self, mock_create_session
+    ):  # noqa
         self._mock_stripe_session(mock_create_session)
 
         self.client.force_authenticate(user=self.user)
-        res = self.client.post(BORROWING_LIST_CREATE,
-                               self._payload(self.book_b.id))
+        res = self.client.post(
+            BORROWING_LIST_CREATE, self._payload(self.book_b.id)
+        )
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertIn("id", res.data)
@@ -90,16 +95,18 @@ class BorrowingCreateReturnTests(TestCase):
         mock_create_session.assert_called()
 
     @patch("library.serializers.create_payment_session")
-    def test_create_borrowing_out_of_stock_returns_400(self,
-                                                       mock_create_session):
+    def test_create_borrowing_out_of_stock_returns_400(
+        self, mock_create_session
+    ):
         self._mock_stripe_session(mock_create_session)
 
         self.book_b.inventory = 0
         self.book_b.save(update_fields=["inventory"])
 
         self.client.force_authenticate(user=self.user)
-        res = self.client.post(BORROWING_LIST_CREATE,
-                               self._payload(self.book_b.id))
+        res = self.client.post(
+            BORROWING_LIST_CREATE, self._payload(self.book_b.id)
+        )
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("book", res.data)
@@ -110,13 +117,15 @@ class BorrowingCreateReturnTests(TestCase):
 
     @patch("library.serializers.create_payment_session")
     def test_return_borrowing_sets_actual_return_date_and_increases_inventory(
-            self, mock_create_session):
+        self, mock_create_session
+    ):
         self._mock_stripe_session(mock_create_session)
 
         self.client.force_authenticate(user=self.user)
 
-        res_create = self.client.post(BORROWING_LIST_CREATE,
-                                      self._payload(self.book_a.id))
+        res_create = self.client.post(
+            BORROWING_LIST_CREATE, self._payload(self.book_a.id)
+        )
         self.assertEqual(res_create.status_code, status.HTTP_201_CREATED)
 
         self.book_a.refresh_from_db()
@@ -139,8 +148,9 @@ class BorrowingCreateReturnTests(TestCase):
 
         self.client.force_authenticate(user=self.user)
 
-        res_create = self.client.post(BORROWING_LIST_CREATE,
-                                      self._payload(self.book_a.id))
+        res_create = self.client.post(
+            BORROWING_LIST_CREATE, self._payload(self.book_a.id)
+        )
         self.assertEqual(res_create.status_code, status.HTTP_201_CREATED)
         borrowing_id = res_create.data["id"]
 
@@ -149,5 +159,6 @@ class BorrowingCreateReturnTests(TestCase):
 
         res2 = self.client.post(borrowing_return_url(borrowing_id))
         self.assertEqual(res2.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(res2.data["detail"],
-                         "This borrowing is already returned.")
+        self.assertEqual(
+            res2.data["detail"], "This borrowing is already returned."
+        )

@@ -5,7 +5,7 @@ from users.serializers import UserSerializer
 
 class SerializerTests(TestCase):
     def test_user_serializer(self):
-        """Test user serializer validation """
+        """Test user serializer validation"""
         payload = {
             "email": "test@example.com",
             "password": "VeryLongPassword",
@@ -15,11 +15,11 @@ class SerializerTests(TestCase):
         self.assertTrue(serializer.is_valid())
 
     def test_user_serializer_validation(self):
-        """Test user serializer validation """
+        """Test user serializer validation"""
         payload = {
             "email": "test@example.com",
             "password": "short",
-            "first_name": "John"
+            "first_name": "John",
         }
         serializer = UserSerializer(data=payload)
 
