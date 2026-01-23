@@ -38,10 +38,7 @@ class PaymentViewSetTests(TestCase):
         )
 
         self.book = Book.objects.create(
-            title="Test Book",
-            author="Author",
-            inventory=10,
-            daily_fee=5
+            title="Test Book", author="Author", inventory=10, daily_fee=5
         )
 
         borrow_date = date.today()
@@ -107,10 +104,7 @@ class PaymentSessionTests(TestCase):
         )
 
         self.book = Book.objects.create(
-            title="Test Book",
-            author="Author",
-            inventory=10,
-            daily_fee=5
+            title="Test Book", author="Author", inventory=10, daily_fee=5
         )
         self.days = 6
 
@@ -129,19 +123,21 @@ class PaymentSessionTests(TestCase):
             book=self.book,
             borrow_date=date.today(),
             expected_return_date=date.today() + timedelta(days=5),
-            actual_return_date=date.today() + timedelta(days=10)
+            actual_return_date=date.today() + timedelta(days=10),
         )
 
     def test_correct_total_price(self):
         session = create_payment_session(self.borrowing)
         price = session.total_price / 100
-        calculate_total = (self.days * self.book.daily_fee)
+        calculate_total = self.days * self.book.daily_fee
         self.assertEqual(price, calculate_total)
 
     def test_correct_fee_price(self):
         session = create_payment_session(self.exp_borrowing)
         price = session.total_price / 100
         days = (
-                self.exp_borrowing.actual_return_date - self.exp_borrowing.expected_return_date).days # noqa
+            self.exp_borrowing.actual_return_date
+            - self.exp_borrowing.expected_return_date
+        ).days  # noqa
         calculate_total = days * self.book.daily_fee
         self.assertEqual(price, calculate_total)

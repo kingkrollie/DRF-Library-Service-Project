@@ -6,6 +6,5 @@ exclude = '''
     migrations
   | venv
   | .venv
-  | tests
 )/
 '''

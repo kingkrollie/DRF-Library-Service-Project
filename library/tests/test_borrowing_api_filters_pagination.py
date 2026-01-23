@@ -81,10 +81,10 @@ class BorrowingFiltersPaginationTests(TestCase):
     # ---- Filters: is_active ----
 
     def test_filter_is_active_true(self):
-        active = self._create_borrowing(self.user, self.book_a,
-                                        returned=False)
-        returned = self._create_borrowing(self.user, self.book_a,
-                                          returned=True)
+        active = self._create_borrowing(self.user, self.book_a, returned=False)
+        returned = self._create_borrowing(
+            self.user, self.book_a, returned=True
+        )
 
         self.client.force_authenticate(user=self.user)
         res = self.client.get(BORROWING_LIST, {"is_active": "true"})
@@ -95,10 +95,10 @@ class BorrowingFiltersPaginationTests(TestCase):
         self.assertNotIn(returned.id, ids)
 
     def test_filter_is_active_false(self):
-        active = self._create_borrowing(self.user, self.book_a,
-                                        returned=False)
-        returned = self._create_borrowing(self.user, self.book_a,
-                                          returned=True)
+        active = self._create_borrowing(self.user, self.book_a, returned=False)
+        returned = self._create_borrowing(
+            self.user, self.book_a, returned=True
+        )
 
         self.client.force_authenticate(user=self.user)
         res = self.client.get(BORROWING_LIST, {"is_active": "false"})
