@@ -45,7 +45,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
     def validate_expected_return_date(self, value):
-        today = timezone.localdate()
+        today = timezone.now().date()
         if value < today:
             raise serializers.ValidationError(
                 "Expected return date cannot be " "earlier than today."
