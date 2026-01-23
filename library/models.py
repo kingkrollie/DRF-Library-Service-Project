@@ -25,7 +25,7 @@ class Book(models.Model):
 
 
 class Borrowing(models.Model):
-    borrow_date = models.DateField(default=timezone.now)
+    borrow_date = models.DateField(default=timezone.now().date())
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
 
