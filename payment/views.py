@@ -1,6 +1,7 @@
 import os
 import stripe
 from django.conf import settings
+from django.db import transaction
 from django.utils.decorators import method_decorator
 
 from django.http import HttpResponse
@@ -72,10 +73,16 @@ class StripeWebhookView(APIView):
             session = event["data"]["object"]
 
             try:
-                payment = Payment.objects.get(session_id=session["id"])
-                payment.status = Payment.Status.PAID
-                payment.save(update_fields=["status"])
-                notify_payment_success.delay(payment.id)
+                with transaction.atomic():
+                    payment = (
+                        Payment.objects
+                        .select_for_update()
+                        .get(session_id=session["id"])
+                    )
+                    if payment.status != Payment.Status.PAID:
+                        payment.status = Payment.Status.PAID
+                        payment.save(update_fields=["status"])
+                        notify_payment_success.delay(payment.id)
             except Payment.DoesNotExist:
                 pass
 
