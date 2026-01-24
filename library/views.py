@@ -118,7 +118,7 @@ class BorrowingViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        borrowing.actual_return_date = timezone.localdate()
+        borrowing.actual_return_date = timezone.now().date()
         borrowing.save(update_fields=["actual_return_date"])
 
         Book.objects.filter(pk=borrowing.book_id).update(

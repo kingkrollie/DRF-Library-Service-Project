@@ -8,24 +8,11 @@ from payment.services import create_payment_session
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = (
-            "id",
-            "title",
-            "author",
-            "cover",
-            "inventory",
-            "daily_fee",
-        )
-
-
-class BookDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
         fields = ("id", "title", "author", "cover", "inventory", "daily_fee")
 
 
 class BorrowingReadSerializer(serializers.ModelSerializer):
-    book = BookDetailSerializer(read_only=True)
+    book = BookSerializer(read_only=True)
 
     class Meta:
         model = Borrowing
@@ -45,7 +32,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("id",)
 
     def validate_expected_return_date(self, value):
-        today = timezone.localdate()
+        today = timezone.now().date()
         if value < today:
             raise serializers.ValidationError(
                 "Expected return date cannot be " "earlier than today."
