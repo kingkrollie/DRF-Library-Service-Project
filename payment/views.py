@@ -74,10 +74,8 @@ class StripeWebhookView(APIView):
 
             try:
                 with transaction.atomic():
-                    payment = (
-                        Payment.objects
-                        .select_for_update()
-                        .get(session_id=session["id"])
+                    payment = Payment.objects.select_for_update().get(
+                        session_id=session["id"]
                     )
                     if payment.status != Payment.Status.PAID:
                         payment.status = Payment.Status.PAID
