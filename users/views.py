@@ -34,7 +34,9 @@ class LoginUserView(TokenObtainPairView):
 )
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer()
-    authentication_classes = [JWTAuthentication(),]
+    authentication_classes = [
+        JWTAuthentication(),
+    ]
     permission_classes = [IsAuthenticated()]
 
     def get_object(self):
