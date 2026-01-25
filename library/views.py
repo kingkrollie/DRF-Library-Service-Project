@@ -86,7 +86,7 @@ class BorrowingViewSet(
 
     def get_permissions(self):
         if self.action in ("retrieve", "return_book"):
-            return (IsAuthenticated(), IsOwnerOrStaff())
+            return [IsAuthenticated(), IsOwnerOrStaff()]
         return super().get_permissions()
 
     @transaction.atomic
