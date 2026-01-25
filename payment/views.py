@@ -22,7 +22,7 @@ stripe.api_key = settings.STRIPE_API_KEY
 
 class PaymentViewSet(ReadOnlyModelViewSet):
     serializer_class = PaymentSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOrStaff)
+    permission_classes = [IsAuthenticated, IsOwnerOrStaff]
 
     def get_queryset(self):
         user = self.request.user
