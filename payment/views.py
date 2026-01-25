@@ -21,8 +21,8 @@ stripe.api_key = settings.STRIPE_API_KEY
 
 
 class PaymentViewSet(ReadOnlyModelViewSet):
-    serializer_class = PaymentSerializer()
-    permission_classes = [IsAuthenticated(), IsOwnerOrStaff()]
+    serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrStaff]
 
     def get_queryset(self):
         user = self.request.user
@@ -53,7 +53,7 @@ def payment_cancel(request):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class StripeWebhookView(APIView):
-    permission_classes = [AllowAny()]
+    permission_classes = [AllowAny]
     authentication_classes = []
 
     def post(self, request):

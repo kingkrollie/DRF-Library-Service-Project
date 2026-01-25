@@ -30,9 +30,9 @@ class BookViewSet(
     GenericViewSet,
 ):
     queryset = Book.objects.all().order_by("id")
-    serializer_class = BookSerializer()
+    serializer_class = BookSerializer
     permission_classes = [
-        IsAdminOrReadOnly(),
+        IsAdminOrReadOnly,
     ]
 
 
@@ -43,10 +43,10 @@ class BorrowingViewSet(
     GenericViewSet,
 ):
     permission_classes = [
-        IsAuthenticated(),
+        IsAuthenticated,
     ]
     filter_backends = [
-        OrderingFilter(),
+        OrderingFilter,
     ]
     ordering_fields = (
         "borrow_date",
@@ -86,7 +86,7 @@ class BorrowingViewSet(
 
     def get_permissions(self):
         if self.action in ("retrieve", "return_book"):
-            return [IsAuthenticated(), IsOwnerOrStaff()]
+            return [IsAuthenticated, IsOwnerOrStaff]
         return super().get_permissions()
 
     @transaction.atomic
