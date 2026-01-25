@@ -15,11 +15,11 @@ from users.serializers import UserSerializer, AuthTokenSerializer
     )
 )
 class CreateUserView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer()
 
 
 class LoginUserView(TokenObtainPairView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+    renderer_classes = [JSONRenderer(), BrowsableAPIRenderer()]
     serializer_class = AuthTokenSerializer
 
 
@@ -33,9 +33,9 @@ class LoginUserView(TokenObtainPairView):
     ),
 )
 class ManageUserView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    authentication_classes = (JWTAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer()
+    authentication_classes = [JWTAuthentication(),]
+    permission_classes = [IsAuthenticated()]
 
     def get_object(self):
         return self.request.user

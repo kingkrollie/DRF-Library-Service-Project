@@ -30,8 +30,8 @@ class BookViewSet(
     GenericViewSet,
 ):
     queryset = Book.objects.all().order_by("id")
-    serializer_class = BookSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    serializer_class = BookSerializer()
+    permission_classes = [IsAdminOrReadOnly(),]
 
 
 class BorrowingViewSet(
@@ -40,8 +40,8 @@ class BorrowingViewSet(
     mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
-    permission_classes = (IsAuthenticated,)
-    filter_backends = (OrderingFilter,)
+    permission_classes = [IsAuthenticated(),]
+    filter_backends = [OrderingFilter(),]
     ordering_fields = (
         "borrow_date",
         "expected_return_date",
