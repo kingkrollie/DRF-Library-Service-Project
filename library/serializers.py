@@ -32,6 +32,11 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         fields = ("id", "book", "expected_return_date")
         read_only_fields = ("id",)
 
+    def validate_book(self, value):
+        if value.inventory < 1:
+            raise serializers.ValidationError("This book is out of stock.")
+        return value
+
     def validate_expected_return_date(self, value):
         today = timezone.now().date()
         if value < today:
