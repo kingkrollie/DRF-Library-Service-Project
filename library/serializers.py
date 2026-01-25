@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 from library.models import Borrowing, Book
@@ -42,17 +43,18 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = validated_data.pop("user")
 
-        borrowing = Borrowing.objects.create(user=user, **validated_data)
+        with transaction.atomic():
+            borrowing = Borrowing.objects.create(user=user, **validated_data)
 
-        session = create_payment_session(borrowing)
+            session = create_payment_session(borrowing)
 
-        Payment.objects.create(
-            borrowing=borrowing,
-            session_id=session.id,
-            session_url=session.url,
-            money=session.total_price,
-            status=Payment.Status.PENDING,
-            type=Payment.Type.PAYMENT,
-        )
+            Payment.objects.create(
+                borrowing=borrowing,
+                session_id=session.id,
+                session_url=session.url,
+                money=session.total_price,
+                status=Payment.Status.PENDING,
+                type=Payment.Type.PAYMENT,
+            )
 
         return borrowing
