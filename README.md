@@ -3,6 +3,28 @@
 Library management system
 Built with Django REST Framework
 
+### Tech Stack & Tools
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Django REST Framework](https://img.shields.io/badge/DRF-0A0A0A?style=for-the-badge&logo=django&logoColor=white)
+![Psycopg](https://img.shields.io/badge/Psycopg-336791?style=for-the-badge)
+![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![python-dotenv](https://img.shields.io/badge/python--dotenv-212121?style=for-the-badge)
+![Celery](https://img.shields.io/badge/Celery-00BFFF?style=for-the-badge&logo=celery&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+![Pytest](https://img.shields.io/badge/Pytest-46BC99?style=for-the-badge&logo=pytest&logoColor=white)
+![Flake8](https://img.shields.io/badge/Flake8-000000?style=for-the-badge)
+![Black](https://img.shields.io/badge/Black-000000?style=for-the-badge)
+
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![docker-compose](https://img.shields.io/badge/docker--compose-2496ED?style=for-the-badge)
+
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-0088CC?style=for-the-badge&logo=telegram&logoColor=white)
+
 ## Description
 
 **Library Service** is a web-based application designed to manage books, borrowings, and users in a library.
